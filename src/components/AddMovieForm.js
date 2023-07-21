@@ -5,9 +5,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import useAxios, { REQ_TYPES } from "../hooks/useAxios";
 
-const EditMovieForm = (props) => {
+const AddMovieForm = (props) => {
   const { push } = useHistory();
-  const { id } = useParams();
   const { setMovies } = props;
   const [movie, setMovie] = useState({
     title: "",
@@ -16,17 +15,9 @@ const EditMovieForm = (props) => {
     metascore: 0,
     description: "",
   });
-  const [ getMovie ] = useAxios()
-  const [ editMovie] = useAxios()
-  useEffect(() => {
-    getMovie({
-      endpoint: `/movies/${id}`,
-      reqType: REQ_TYPES.GET,
-    }).then((res) => {
-        setMovie(res);
-      })
 
-  }, [id])
+  const [ addMovie] = useAxios()
+  
   const handleChange = (e) => {
     setMovie({
       ...movie,
@@ -36,14 +27,14 @@ const EditMovieForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    editMovie({
-      endpoint: `/movies/${id}`,
-      reqType: REQ_TYPES.PUT,
+    addMovie({
+      endpoint: `/movies`,
+      reqType: REQ_TYPES.POST,
       payload:movie
     })
       .then((res) => {
         setMovies(res);
-        push(`/movies/${movie.id}`);
+        push(`/movies`);
       })
       .catch((err) => {
         console.log(err);
@@ -53,7 +44,7 @@ const EditMovieForm = (props) => {
   const { title, director, genre, metascore, description } = movie;
 
   return (
-    <div className="bg-white rounded-md shadow flex-1 dark:bg-slate-600 dark:text-[#f8fafc]">
+    <div className="bg-white rounded-md shadow flex-1">
       <form onSubmit={handleSubmit}>
         <div className="p-5 pb-3 border-b border-zinc-200">
           <h4 className="text-xl font-bold">Düzenleniyor <strong>{movie.title}</strong></h4>
@@ -122,4 +113,4 @@ const EditMovieForm = (props) => {
   );
 };
 
-export default EditMovieForm;
+export default AddMovieForm;
